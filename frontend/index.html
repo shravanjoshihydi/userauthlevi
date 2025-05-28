@@ -1,0 +1,67 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Comment Auth UI</title>
+</head>
+<body>
+  <h1>Login</h1>
+  <input id="email" placeholder="email" />
+  <input id="password" placeholder="password" type="password" />
+  <button onclick="login()">Login</button>
+
+  <h2>Add Comment</h2>
+  <textarea id="commentText"></textarea>
+  <button onclick="addComment()">Add</button>
+
+  <h2>Comments</h2>
+  <ul id="comments"></ul>
+
+  <script>
+    let token = '';
+
+    async function login() {
+      const res = await fetch('https://<your-vercel-url>/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: document.getElementById('email').value,
+          password: document.getElementById('password').value,
+        }),
+      });
+      const data = await res.json();
+      token = data.accessToken;
+      fetchComments();
+    }
+
+    async function addComment() {
+      await fetch('https://<your-vercel-url>/api/comments', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer ' + token,
+        },
+        body: JSON.stringify({ text: document.getElementById('commentText').value }),
+      });
+      fetchComments();
+    }
+
+    async function fetchComments() {
+      const res = await fetch('https://<your-vercel-url>/api/comments', {
+        headers: {
+          Authorization: 'Bearer ' + token,
+        },
+      });
+      const data = await res.json();
+      const ul = document.getElementById('comments');
+      ul.innerHTML = '';
+      data.forEach(c => {
+        const li = document.createElement('li');
+        li.textContent = c.text + ' by ' + (c.user?.name || 'anonymous');
+        ul.appendChild(li);
+      });
+    }
+  </script>
+</body>
+</html>
