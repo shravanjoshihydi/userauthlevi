@@ -9,10 +9,7 @@ const commentRoutes = require('./routes/comments');
 
 const app = express();
 // app.use(cors({ origin: true, credentials: true }));
-app.use(cors({
-  origin: 'https://userauthlevi-frontend.vercel.app',
-  credentials: true
-}));
+app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
 
