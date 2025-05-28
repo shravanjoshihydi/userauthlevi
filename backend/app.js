@@ -9,7 +9,7 @@ const commentRoutes = require('./routes/comments');
 
 const app = express();
 // app.use(cors({ origin: true, credentials: true }));
-app.use(cors());
+app.use(cors({ origin: '*' }));
 app.use(express.json());
 app.use(cookieParser());
 
